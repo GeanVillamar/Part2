@@ -11,6 +11,9 @@ const Content = ({ course }) => {
       <p>
         {course.parts[2].name} Exercises:{course.parts[2].exercises}
       </p>
+      <p>
+        {course.parts[3].name} Exercises:{course.parts[3].exercises}
+      </p>
     </div>
   );
 };
