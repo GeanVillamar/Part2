@@ -1,19 +1,12 @@
 const Content = ({ course }) => {
-  console.log("content component: ", course);
+  console.log("course:", course);
   return (
     <div>
-      <p>
-        {course.parts[0].name} Exercises:{course.parts[0].exercises}
-      </p>
-      <p>
-        {course.parts[1].name} Exercises:{course.parts[1].exercises}
-      </p>
-      <p>
-        {course.parts[2].name} Exercises:{course.parts[2].exercises}
-      </p>
-      <p>
-        {course.parts[3].name} Exercises:{course.parts[3].exercises}
-      </p>
+      {course.parts.map((part) => (
+        <p key={part.id}>
+          {part.name} Exercises: {part.exercises}
+        </p>
+      ))}
     </div>
   );
 };
