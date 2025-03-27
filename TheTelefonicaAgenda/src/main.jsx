@@ -5,7 +5,7 @@ const persons = [
   {
     id: 1,
     name: "Arturo Rodriguez",
-    important: true,
+    number: "123456789",
   },
 ];
 

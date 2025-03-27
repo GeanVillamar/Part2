@@ -1,4 +1,12 @@
 const Person = ({ person }) => {
-  return <li>{person.name}</li>;
+  return (
+    <>
+      <li>
+        {person.name}
+        {person.number}
+      </li>
+      ;
+    </>
+  );
 };
 export default Person;

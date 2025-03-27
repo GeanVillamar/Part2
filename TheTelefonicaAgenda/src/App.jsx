@@ -4,6 +4,7 @@ import Person from "./components/Person";
 const App = (props) => {
   const [persons, setPersons] = useState(props.persons);
   const [newName, setNewName] = useState("new person");
+  const [newNumber, setNewNumber] = useState("new number");
 
   console.log("array persons", persons);
 
@@ -11,6 +12,7 @@ const App = (props) => {
     event.preventDefault();
     const personObject = {
       name: newName,
+      number: newNumber,
       id: persons.length + 1,
     };
 
@@ -24,6 +26,7 @@ const App = (props) => {
 
     setPersons(persons.concat(personObject));
     setNewName("");
+    setNewNumber("");
   };
 
   const handleNameChange = (event) => {
@@ -31,25 +34,32 @@ const App = (props) => {
     setNewName(event.target.value);
   };
 
+  const handleNumberChange = (event) => {
+    console.log(event.target.value);
+    setNewNumber(event.target.value);
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <ul>
-        {persons.map((person) => (
-          <Person key={person.id} person={person} />
-        ))}
-      </ul>
       <form onSubmit={addName}>
         <div>
           name: <input value={newName} onChange={handleNameChange} />
         </div>
         <div>
+          number: <input value={newNumber} onChange={handleNumberChange} />
+        </div>
+        <div>
           <button type="submit">add</button>
         </div>
       </form>
-      <div>debug: {newName}</div>
       <h2>Numbers</h2>
-      ...
+      <ul>
+        {persons.map((person) => (
+          <Person key={person.id} person={person} />
+        ))}
+      </ul>
+      <div>debug: {newName}</div>
     </div>
   );
 };
