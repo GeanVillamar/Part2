@@ -5,8 +5,16 @@ const App = (props) => {
   const [persons, setPersons] = useState(props.persons);
   const [newName, setNewName] = useState("new person");
   const [newNumber, setNewNumber] = useState("new number");
+  const [search, setSearch] = useState("");
 
   console.log("array persons", persons);
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const filteredpersons = persons.filter((person) =>
+    person.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   const addName = (event) => {
     event.preventDefault();
@@ -42,6 +50,12 @@ const App = (props) => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        filter shown with
+        <input value={search} onChange={handleSearchChange} />
+      </div>
+
+      <h2>add a new</h2>
       <form onSubmit={addName}>
         <div>
           name: <input value={newName} onChange={handleNameChange} />
@@ -55,7 +69,7 @@ const App = (props) => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map((person) => (
+        {filteredpersons.map((person) => (
           <Person key={person.id} person={person} />
         ))}
       </ul>
