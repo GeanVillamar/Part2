@@ -1,11 +1,13 @@
-const Person = ({ person }) => {
+const Person = ({ filteredpersons }) => {
   return (
     <>
-      <li>
-        {person.name}
-        {person.number}
-      </li>
-      ;
+      <ul>
+        {filteredpersons.map((person) => (
+          <li key={person.id}>
+            {person.name} - {person.number}
+          </li>
+        ))}
+      </ul>
     </>
   );
 };
