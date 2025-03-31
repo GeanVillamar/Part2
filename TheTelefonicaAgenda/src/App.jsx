@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import noteService from "./services/Persons";
 import axios from "axios";
 import Person from "./components/Person";
 import Filter from "./components/Filter";
@@ -6,14 +7,13 @@ import PersonForm from "./components/PersonForm";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("new person");
-  const [newNumber, setNewNumber] = useState("new number");
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    console.log("effect");
-    axios
-      .get("http://localhost:3001/persons")
+    noteService
+      .getAll()
       .then((response) => {
         console.log("promise fulfilled");
         setPersons(response.data);
@@ -22,7 +22,6 @@ const App = () => {
         console.error("Error fetching data:", error);
       });
   }, []);
-  console.log("render", persons.length, "persons");
 
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
@@ -40,12 +39,18 @@ const App = () => {
       id: persons.length + 1,
     };
 
-    axios
-      .post("http://localhost:3001/persons", personObject)
-      .then((response) => {
-        console.log("promise fulfilled");
-        setPersons(persons.concat(response.data));
-      });
+    noteService.create(personObject).then((response) => {
+      setPersons(persons.concat(response.data));
+      setNewName("");
+      setNewNumber("");
+    });
+
+    // axios
+    //   .post("http://localhost:3001/persons", personObject)
+    //   .then((response) => {
+    //     console.log("promise fulfilled");
+    //     setPersons(persons.concat(response.data));
+    //   });
 
     const nameExists = persons.some((person) => person.name === newName);
 
