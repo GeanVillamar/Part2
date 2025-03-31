@@ -40,6 +40,13 @@ const App = () => {
       id: persons.length + 1,
     };
 
+    axios
+      .post("http://localhost:3001/persons", personObject)
+      .then((response) => {
+        console.log("promise fulfilled");
+        setPersons(persons.concat(response.data));
+      });
+
     const nameExists = persons.some((person) => person.name === newName);
 
     if (nameExists) {
