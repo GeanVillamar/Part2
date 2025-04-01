@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import noteService from "./services/Persons";
-import axios from "axios";
 import Person from "./components/Person";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
@@ -45,13 +44,6 @@ const App = () => {
       setNewNumber("");
     });
 
-    // axios
-    //   .post("http://localhost:3001/persons", personObject)
-    //   .then((response) => {
-    //     console.log("promise fulfilled");
-    //     setPersons(persons.concat(response.data));
-    //   });
-
     const nameExists = persons.some((person) => person.name === newName);
 
     if (nameExists) {
@@ -75,6 +67,21 @@ const App = () => {
     setNewNumber(event.target.value);
   };
 
+  const toggledelet = (id) => {
+    const person = persons.find((p) => p.id === id);
+
+    if (window.confirm(`Delete ${person.name}?`)) {
+      noteService
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== id));
+        })
+        .catch((error) => {
+          console.error("Error deleting person:", error);
+        });
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -89,7 +96,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Person filteredpersons={filteredpersons} />
+      <Person filteredpersons={filteredpersons} toggledelet={toggledelet} />
     </div>
   );
 };
