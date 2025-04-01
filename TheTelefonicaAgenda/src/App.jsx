@@ -32,10 +32,23 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault();
+    const existingPerson = persons.find((person) => person.name === newName);
+
+    if (existingPerson) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        handleUpdate(existingPerson.id);
+      }
+      return;
+    }
+
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
+      //id: persons.length + 1,
     };
 
     noteService.create(personObject).then((response) => {
@@ -44,17 +57,9 @@ const App = () => {
       setNewNumber("");
     });
 
-    const nameExists = persons.some((person) => person.name === newName);
-
-    if (nameExists) {
-      alert(`${newName} is already added to phonebook`);
-      setNewName("");
-      return;
-    }
-
-    setPersons(persons.concat(personObject));
-    setNewName("");
-    setNewNumber("");
+    // setPersons(persons.concat(personObject));
+    // setNewName("");
+    // setNewNumber("");
   };
 
   const handleNameChange = (event) => {
@@ -77,7 +82,33 @@ const App = () => {
           setPersons(persons.filter((p) => p.id !== id));
         })
         .catch((error) => {
+          alert(
+            `Error deleting ${person.name}. They may have already been removed.`
+          );
+          setPersons(persons.filter((p) => p.id !== id));
           console.error("Error deleting person:", error);
+        });
+    }
+  };
+
+  const handleUpdate = (id) => {
+    const person = persons.find((p) => p.id === id);
+    const updatedPerson = { ...person, number: newNumber };
+
+    if (
+      window.confirm(
+        `${person.name} is already added to phonebook,
+         replace the old number with a new one?`
+      )
+    ) {
+      noteService
+        .update(id, updatedPerson)
+        .then((response) => {
+          setPersons(persons.map((p) => (p.id !== id ? p : response.data)));
+          setNewNumber("");
+        })
+        .catch((error) => {
+          console.error("Error updating person:", error);
         });
     }
   };
@@ -94,6 +125,7 @@ const App = () => {
         newNumber={newNumber}
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
+        handleUpdate={handleUpdate}
       />
       <h2>Numbers</h2>
       <Person filteredpersons={filteredpersons} toggledelet={toggledelet} />

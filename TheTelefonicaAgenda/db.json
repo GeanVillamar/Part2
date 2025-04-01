@@ -12,7 +12,7 @@
     },
     {
       "name": "Dan Abramov",
-      "number": "12-43-234345",
+      "number": "123-456-098",
       "id": "3"
     },
     {
@@ -21,8 +21,18 @@
       "id": "4"
     },
     {
-      "id": "5",
-      "name": "Arturo",
+      "id": 7,
+      "name": "Alberto",
+      "number": "123-456"
+    },
+    {
+      "id": 8,
+      "name": "Arto Hellas",
+      "number": "09234-2123"
+    },
+    {
+      "id": 7,
+      "name": "Carl Jhonson",
       "number": "123-456"
     }
   ]
