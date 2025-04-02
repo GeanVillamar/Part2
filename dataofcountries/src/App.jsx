@@ -46,7 +46,10 @@ function App() {
         </div>
       ) : (
         countries.map((country) => (
-          <p key={country.cca3}>{country.name.common}</p>
+          <p key={country.cca3}>
+            {country.name.common}
+            <button onClick={() => setQuery(country.name.common)}>show</button>
+          </p>
         ))
       )}
     </div>
