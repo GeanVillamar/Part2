@@ -3,12 +3,16 @@ import noteService from "./services/Persons";
 import Person from "./components/Person";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
+import Notification from "./components/Notification";
+import "./index.css";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     noteService
@@ -48,18 +52,24 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
-      //id: persons.length + 1,
     };
 
-    noteService.create(personObject).then((response) => {
-      setPersons(persons.concat(response.data));
-      setNewName("");
-      setNewNumber("");
-    });
+    noteService
+      .create(personObject)
+      .then((response) => {
+        setPersons(persons.concat(response.data));
+        setNewName("");
+        setNewNumber("");
 
-    // setPersons(persons.concat(personObject));
-    // setNewName("");
-    // setNewNumber("");
+        // Mostrar mensaje de éxito
+        setSuccessMessage(`Added ${response.data.name}`);
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
+      })
+      .catch((error) => {
+        console.error("Error adding person:", error);
+      });
   };
 
   const handleNameChange = (event) => {
@@ -75,6 +85,11 @@ const App = () => {
   const toggledelet = (id) => {
     const person = persons.find((p) => p.id === id);
 
+    if (!person) {
+      alert("Person not found.");
+      return;
+    }
+
     if (window.confirm(`Delete ${person.name}?`)) {
       noteService
         .deletePerson(id)
@@ -82,10 +97,13 @@ const App = () => {
           setPersons(persons.filter((p) => p.id !== id));
         })
         .catch((error) => {
-          alert(
-            `Error deleting ${person.name}. They may have already been removed.`
+          setErrorMessage(
+            `Information of ${person.name} was already removed from server`
           );
-          setPersons(persons.filter((p) => p.id !== id));
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+          setPersons(persons.filter((p) => p.id !== id)); // Eliminar del estado de todas formas
           console.error("Error deleting person:", error);
         });
     }
@@ -93,21 +111,28 @@ const App = () => {
 
   const handleUpdate = (id) => {
     const person = persons.find((p) => p.id === id);
+    if (!person) return;
+
     const updatedPerson = { ...person, number: newNumber };
 
-    if (
-      window.confirm(
-        `${person.name} is already added to phonebook,
-         replace the old number with a new one?`
-      )
-    ) {
+    if (window.confirm(`Replace ${person.name}'s number with a new one?`)) {
       noteService
         .update(id, updatedPerson)
         .then((response) => {
           setPersons(persons.map((p) => (p.id !== id ? p : response.data)));
           setNewNumber("");
+
+          // Mostrar mensaje de éxito
+          setErrorMessage(`Updated ${response.data.name}'s number`);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
         })
         .catch((error) => {
+          setErrorMessage(`Error updating ${person.name}.`);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
           console.error("Error updating person:", error);
         });
     }
@@ -116,6 +141,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} successMessage={successMessage} />
       <Filter search={search} handleSearchChange={handleSearchChange} />
 
       <h2>add a new</h2>
